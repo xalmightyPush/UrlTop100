@@ -10,7 +10,8 @@ public class TestFileUtil {
         try {
             String targetPath = "D:\\soucecode\\data";
             File file = new File("D:\\soucecode\\data\\data.txt");
-            FileUtil fileUtil = new FileUtil();
+            FileUtil file
+            Util = new FileUtil();
             fileUtil.splitFile(file, targetPath);
         } catch (Exception e) {
             e.printStackTrace();
