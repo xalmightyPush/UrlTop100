@@ -295,6 +295,51 @@ public class FileUtil {
         logMemory();
     }
 
+    /**
+     * 功能说明：按文件大小均匀拆分文件
+     *
+     * @param file
+     */
+    private static void splitFileBySize(File file, File targetPath) {
+        try {
+            FileInputStream fs = new FileInputStream(file);
+            // 定义缓冲区
+            byte[] b = new byte[SIZE];
+            FileOutputStream fo = null;
+            int len = 0;
+            int count = 0;
+
+            /**
+             * 切割文件时，记录 切割文件的名称和切割的子文件个数以方便合并
+             * 这个信息为了简单描述，使用键值对的方式，用到了properties对象
+             */
+            Properties pro = new Properties();
+            // 定义输出的文件夹路径
+            File dir = targetPath;
+            // 判断文件夹是否存在，不存在则创建
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            // 切割文件
+            while ((len = fs.read(b)) != -1) {
+                fo = new FileOutputStream(new File(dir, (count++) + ".part"));
+                fo.write(b, 0, len);
+                fo.close();
+            }
+            // 将被切割的文件信息保存到properties中
+            pro.setProperty("partCount", count + "");
+            pro.setProperty("fileName", file.getName());
+            fo = new FileOutputStream(new File(dir, (count++) + ".properties"));
+            // 写入properties文件
+            pro.store(fo, "save file info");
+            fo.close();
+            fs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public String GetFileSize(File file) {
         String size;
         if (file.exists() && file.isFile()) {
